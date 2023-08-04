@@ -1,0 +1,81 @@
+Metadata-Version: 2.1
+Name: EntropyEncoding
+Version: 0.0.2
+Summary: This package implements an encoding to bypass entropy antivirus check.
+Home-page: https://github.com/mauricelambert/EntropyEncoding
+Author: Maurice Lambert
+Author-email: Maurice Lambert <mauricelambert434@gmail.com>
+Maintainer: Maurice Lambert
+Maintainer-email: Maurice Lambert <mauricelambert434@gmail.com>
+License: GPL-3.0 License
+Project-URL: Github, https://github.com/mauricelambert/EntropyEncoding
+Project-URL: Documentation, https://user.github.io/info/python/security/EntropyEncoding.html
+Keywords: entropy,antivirus-bypass,payload-encoding,encoding,malware
+Platform: Windows
+Platform: Linux
+Platform: MacOS
+Classifier: Topic :: System
+Classifier: Topic :: Security
+Classifier: Environment :: Console
+Classifier: Topic :: System :: Shells
+Classifier: Operating System :: POSIX
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: System :: System Shells
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Topic :: System :: Systems Administration
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+
+# EntropyEncoding
+
+## Description
+
+This package implements an encoding to bypass entropy antivirus check.
+
+## Requirements
+
+This package require:
+ - python3
+ - python3 Standard Library
+
+## Installation
+
+```bash
+python3 -m pip install EntropyEncoding
+```
+
+```bash
+git clone "https://github.com/mauricelambert/EntropyEncoding.git"
+cd "EntropyEncoding"
+python3 -m pip install .
+```
+
+## Usages
+
+```python
+from EntropyEncoding import *
+
+encoded_shellcode = entropy_encode(b"shellcode_payload")
+print(encoded_shellcode)
+
+entropy_decode(encoded_shellcode) == b"shellcode_payload"
+
+print(shannon_entropy)
+```
+
+## Links
+
+ - [Pypi](https://pypi.org/project/EntropyEncoding)
+ - [Github](https://github.com/mauricelambert/EntropyEncoding)
+ - [Documentation](https://user.github.io/info/python/security/EntropyEncoding.html)
+
+## License
+
+Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).

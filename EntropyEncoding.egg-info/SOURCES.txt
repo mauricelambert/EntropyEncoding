@@ -1,0 +1,11 @@
+EntropyEncoding.py
+LICENSE.txt
+MANIFEST.in
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+EntropyEncoding.egg-info/PKG-INFO
+EntropyEncoding.egg-info/SOURCES.txt
+EntropyEncoding.egg-info/dependency_links.txt
+EntropyEncoding.egg-info/top_level.txt

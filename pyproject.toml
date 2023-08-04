@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "EntropyEncoding"
+version = "0.0.2"
+dependencies = []
+authors = [
+    {name = "Maurice Lambert", email = "mauricelambert434@gmail.com"},
+]
+maintainers = [
+    {name = "Maurice Lambert", email = "mauricelambert434@gmail.com"},
+]
+description = 'This package implements an encoding to bypass entropy antivirus check.'
+readme = {file = "README.md", content-type = "text/markdown"}
+# url = "https://github.com/mauricelambert/EntropyEncoding"
+classifiers = [
+    "Topic :: System",
+    "Topic :: Security",
+    "Environment :: Console",
+    "Topic :: System :: Shells",
+    'Operating System :: POSIX',
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Intended Audience :: Developers",
+    "Topic :: System :: System Shells",
+    'Operating System :: MacOS :: MacOS X',
+    "Programming Language :: Python :: 3.8",
+    'Operating System :: Microsoft :: Windows',
+    "Topic :: System :: Systems Administration",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+]
+keywords = ['entropy', 'antivirus-bypass', 'payload-encoding', 'encoding', 'malware']
+license = {text = "GPL-3.0 License"}
+requires-python = ">=3.8"
+
+[project.urls]
+"Github" = "https://github.com/mauricelambert/EntropyEncoding"
+"Documentation" = "https://user.github.io/info/python/security/EntropyEncoding.html"
+
+[tool.setuptools]
+include-package-data = true
+platforms = ['Windows', 'Linux', "MacOS"]
+py-modules = ['EntropyEncoding']
+packages = []
+script-files = []
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
