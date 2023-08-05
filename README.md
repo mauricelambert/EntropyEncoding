@@ -61,7 +61,7 @@ Entropy for entropy-encoded encrypted exe: 5.759477906043907
 
  - [Pypi](https://pypi.org/project/EntropyEncoding)
  - [Github](https://github.com/mauricelambert/EntropyEncoding)
- - [Documentation](https://user.github.io/info/python/security/EntropyEncoding.html)
+ - [Documentation](https://mauricelambert.github.io/info/python/security/EntropyEncoding.html)
 
 ## License
 
