@@ -18,7 +18,7 @@ setup(
     url="https://github.com/mauricelambert/EntropyEncoding",
     project_urls={
         "Github": "https://github.com/mauricelambert/EntropyEncoding",
-        "Documentation": "https://user.github.io/info/python/security/EntropyEncoding.html",
+        "Documentation": "https://mauricelambert.github.io/info/python/security/EntropyEncoding.html",
     },
     include_package_data=True,
     classifiers=[

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "EntropyEncoding"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = []
 authors = [
     {name = "Maurice Lambert", email = "mauricelambert434@gmail.com"},
@@ -38,7 +38,7 @@ requires-python = ">=3.8"
 
 [project.urls]
 "Github" = "https://github.com/mauricelambert/EntropyEncoding"
-"Documentation" = "https://user.github.io/info/python/security/EntropyEncoding.html"
+"Documentation" = "https://mauricelambert.github.io/info/python/security/EntropyEncoding.html"
 
 [tool.setuptools]
 include-package-data = true
