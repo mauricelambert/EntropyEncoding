@@ -1,8 +1,16 @@
+![EntropyEncoding logo](https://mauricelambert.github.io/info/python/security/EntropyEncoding.gif "EntropyEncoding logo")
+
 # EntropyEncoding
 
 ## Description
 
 This package implements an encoding to bypass entropy antivirus check.
+
+I have researched about entropy bypass techniques and found people who use adding low-entropy data to bypass entropy check. I think adding data can be optimized and more efficient with a simple entropy encoding to reduce entropy score.
+
+Adding low-entropy data:
+ 1. you get a larger file
+ 2. you do not change payload entropy (if the antivirus software splits the file for entropy calculation, it will probably have high entropy on a payload chunk)
 
 ## Requirements
 

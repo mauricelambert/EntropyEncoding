@@ -27,19 +27,21 @@ https://vanmieghem.io/blueprint-for-evading-edr-in-2022/
 https://pentest.blog/art-of-anti-detection-1-introduction-to-av-detection-techniques/
 
 Information based on a blog (red teamer test a not named EDR):
-    - antivirus detect potentially malicious entropy when entropy greater than 7.2
+    - antivirus detect potentially malicious entropy when the entropy score is greater than 7.2
 
 ~# python3 EntropyEncoding.py
 Entropy for non-encoded secrets: 4.521591372417719
-Entropy for non-encoded encrypted secrets: 7.951320327821406
-Entropy for entropy-encoded encrypted secrets: 5.774096152750044
+Entropy for non-encoded encrypted secrets: 7.945422222752084
+Entropy for entropy-encoded encrypted secrets: 5.762166896848745
+Entropy for entropy-encoded2 encrypted secrets: 5.748670434218312
 Entropy for non-encoded exe: 5.22055339277441
-Entropy for non-encoded encrypted exe: 7.914685739354301
-Entropy for entropy-encoded encrypted exe: 5.759477906043907
+Entropy for non-encoded encrypted exe: 7.923900258907012
+Entropy for entropy-encoded encrypted exe: 5.756072685391074
+Entropy for entropy-encoded2 encrypted exe: 5.799741821347019
 ~# 
 """
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,7 +51,13 @@ This package implements an encoding to bypass entropy antivirus check.
 """
 __url__ = "https://github.com/mauricelambert/EntropyEncoding"
 
-__all__ = ["entropy_encode", "entropy_decode", "shannon_entropy"]
+__all__ = [
+    "entropy_encode2",
+    "entropy_decode2",
+    "entropy_encode",
+    "entropy_decode",
+    "shannon_entropy",
+]
 
 __license__ = "GPL-3.0 License"
 __copyright__ = """
@@ -225,18 +233,60 @@ def generate_entropy_encoding() -> Tuple[bytearray, Dict[int, bytearray]]:
         character = choice(base32_characters)
         base32_characters.remove(character)
         data.append(character)
+        encoding[character].append(character)
+
         choice_ = choice(random_characters)
         random_characters.remove(choice_)
-        order = randint(0, 1)
-        if order:
-            encoding[character].append(character)
+
         for _ in range(randint(2, 5)):
             data.append(choice_)
             encoding[character].append(choice_)
-        if not order:
-            encoding[character].append(character)
 
     return data + random_characters, encoding
+
+
+def generate_entropy_encoding2() -> Tuple[bytearray, Dict[int, bytearray]]:
+    """
+    This function generates an encoding to bypass entropy checks.
+
+     + Very difficult to identify
+     - Entropy score is higher
+     - Longer to encode/decode
+    """
+
+    base32_characters = bytearray(b"01234567ABCDEFGHIJKLMNOPQRSTUVWXYZ=")
+    random_characters = bytearray(
+        b"89abcdefghijklmnopqrstuvwxyz!\"#$%&'()*+,-./:;<>?@[\\]^_`{|}~ \t\n\r"
+    )
+
+    data = bytearray()
+
+    encoding = defaultdict(bytearray)
+
+    while base32_characters:
+        character = choice(base32_characters)
+        base32_characters.remove(character)
+        data.append(character)
+
+        choice1 = choice(random_characters)
+        random_characters.remove(choice1)
+        encoding[character].append(choice1)
+
+        choice2 = choice(random_characters)
+        random_characters.remove(choice2)
+
+        order = randint(0, 1)
+        if order:
+            data.append(choice1)
+        for _ in range(randint(2, 5)):
+            data.append(choice2)
+            encoding[character].append(choice2)
+        if not order:
+            data.append(choice1)
+
+        random_characters.append(character)
+
+    return data, encoding
 
 
 def get_entropy_encoding(data: bytes) -> bytes:
@@ -248,8 +298,10 @@ def get_entropy_encoding(data: bytes) -> bytes:
     while len(encoding) < 70:
         character1 = data[0]
         character2 = data[1]
+
         encoding[character1] = character1
         encoding[character2] = character1
+
         index = 2
         for character in data[2:]:
             if character != character2:
@@ -260,30 +312,86 @@ def get_entropy_encoding(data: bytes) -> bytes:
     return data[28:], encoding
 
 
-def entropy_encode(data: bytes) -> bytes:
+def get_entropy_encoding2(data: bytes) -> bytes:
     """
-    This function encodes data to bypass entropy checks.
+    This function returns the encoding to decode entropy-encoding.
     """
 
-    data_encoded, encoding = generate_entropy_encoding()
+    encoding = {}
+    while len(encoding) < 70:
+        character_base = data[0]
+        character1 = data[1]
+        character2 = data[2]
+        index = 3
+
+        while character1 == character2:
+            character2 = data[index]
+            index += 1
+
+        encoding[character1] = character_base
+        encoding[character2] = character_base
+
+        for character in data[index:]:
+            if character != character2:
+                data = data[index:]
+                break
+            index += 1
+
+    return data, encoding
+
+
+def entropy_encode(data: bytes, version: int = 1) -> bytes:
+    """
+    This function encodes data to bypass entropy checks.
+
+    version should be 1 or 2.
+    """
+
+    data_encoded, encoding = (
+        generate_entropy_encoding()
+        if version == 1
+        else generate_entropy_encoding2()
+    )
     for character in b32encode(data):
         data_encoded.append(choice(encoding[character]))
 
     return data_encoded
 
 
-def entropy_decode(data: bytes) -> bytes:
+def entropy_encode2(data: bytes) -> bytes:
+    """
+    Call entropy_encode with version 2.
+    """
+
+    return entropy_encode(data, version=2)
+
+
+def entropy_decode(data: bytes, version: int = 1) -> bytes:
     """
     This function decodes entropy-encoding to retrieve
     data from entropy-encoded data.
+
+    version should be 1 or 2.
     """
 
-    data, encoding = get_entropy_encoding(data)
+    data, encoding = (
+        get_entropy_encoding(data)
+        if version == 1
+        else get_entropy_encoding2(data)
+    )
     data_decoded = bytearray()
     for character in data:
         data_decoded.append(encoding[character])
 
     return b32decode(data_decoded)
+
+
+def entropy_decode2(data: bytes) -> bytes:
+    """
+    Call entropy_decode with version 2.
+    """
+
+    return entropy_decode(data, version=2)
 
 
 def shannon_entropy(data: bytes) -> float:
@@ -309,7 +417,7 @@ def shannon_entropy(data: bytes) -> float:
 
 
 def test():
-    # For test i use:
+    # For test i use librc4 to encrypt data to get higher entropy:
     #     - https://github.com/mauricelambert/FastRC4/releases/download/v0.0.1/librc4.dll
     #     - https://github.com/mauricelambert/FastRC4/releases/download/v0.0.1/librc4.so
     #     - https://raw.githubusercontent.com/mauricelambert/FastRC4/main/librc4.py
@@ -319,13 +427,28 @@ def test():
     from os import remove, name
 
     with open("librc4.dll", "wb") as file:
-        copyfileobj(urlopen("https://github.com/mauricelambert/FastRC4/releases/download/v0.0.1/librc4.dll"), file)
+        copyfileobj(
+            urlopen(
+                "https://github.com/mauricelambert/FastRC4/releases/download/v0.0.1/librc4.dll"
+            ),
+            file,
+        )
 
     with open("librc4.so", "wb") as file:
-        copyfileobj(urlopen("https://github.com/mauricelambert/FastRC4/releases/download/v0.0.1/librc4.so"), file)
+        copyfileobj(
+            urlopen(
+                "https://github.com/mauricelambert/FastRC4/releases/download/v0.0.1/librc4.so"
+            ),
+            file,
+        )
 
     with open("librc4.py", "wb") as file:
-        copyfileobj(urlopen("https://raw.githubusercontent.com/mauricelambert/FastRC4/main/librc4.py"), file)
+        copyfileobj(
+            urlopen(
+                "https://raw.githubusercontent.com/mauricelambert/FastRC4/main/librc4.py"
+            ),
+            file,
+        )
 
     from librc4 import RC4
 
@@ -341,6 +464,12 @@ def test():
         "Entropy for entropy-encoded encrypted secrets:", shannon_entropy(data)
     )
     assert encrypted_data == entropy_decode(data)
+    data = entropy_encode2(encrypted_data)
+    print(
+        "Entropy for entropy-encoded2 encrypted secrets:",
+        shannon_entropy(data),
+    )
+    assert encrypted_data == entropy_decode2(data)
 
     rc4 = RC4(b"my secret key")
     print("Entropy for non-encoded exe:", shannon_entropy(dll))
@@ -352,9 +481,13 @@ def test():
     data = entropy_encode(encrypted_data)
     print("Entropy for entropy-encoded encrypted exe:", shannon_entropy(data))
     assert encrypted_data == entropy_decode(data)
+    data = entropy_encode2(encrypted_data)
+    print("Entropy for entropy-encoded2 encrypted exe:", shannon_entropy(data))
+    assert encrypted_data == entropy_decode2(data)
 
     if name == "nt":
         from ctypes import windll
+
         windll.kernel32.FreeLibrary(".\\librc4.dll")
 
     remove("librc4.py")

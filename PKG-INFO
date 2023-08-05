@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: EntropyEncoding
-Version: 0.0.2
+Version: 0.0.3
 Summary: This package implements an encoding to bypass entropy antivirus check.
 Home-page: https://github.com/mauricelambert/EntropyEncoding
 Author: Maurice Lambert
@@ -33,11 +33,19 @@ Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
 
+![EntropyEncoding logo](https://mauricelambert.github.io/info/python/security/EntropyEncoding.gif "EntropyEncoding logo")
+
 # EntropyEncoding
 
 ## Description
 
 This package implements an encoding to bypass entropy antivirus check.
+
+I have researched about entropy bypass techniques and found people who use adding low-entropy data to bypass entropy check. I think adding data can be optimized and more efficient with a simple entropy encoding to reduce entropy score.
+
+Adding low-entropy data:
+ 1. you get a larger file
+ 2. you do not change payload entropy (if the antivirus software splits the file for entropy calculation, it will probably have high entropy on a payload chunk)
 
 ## Requirements
 
@@ -62,12 +70,26 @@ python3 -m pip install .
 ```python
 from EntropyEncoding import *
 
+print(shannon_entropy(b"shellcode_payload"))
 encoded_shellcode = entropy_encode(b"shellcode_payload")
 print(encoded_shellcode)
 
 entropy_decode(encoded_shellcode) == b"shellcode_payload"
 
-print(shannon_entropy)
+print(shannon_entropy(encoded_shellcode))
+```
+
+Tests results:
+
+```
+~# python3 EntropyEncoding.py
+Entropy for non-encoded secrets: 4.521591372417719
+Entropy for non-encoded encrypted secrets: 7.951320327821406
+Entropy for entropy-encoded encrypted secrets: 5.774096152750044
+Entropy for non-encoded exe: 5.22055339277441
+Entropy for non-encoded encrypted exe: 7.914685739354301
+Entropy for entropy-encoded encrypted exe: 5.759477906043907
+~# 
 ```
 
 ## Links
