@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: EntropyEncoding
-Version: 0.0.4
+Version: 0.0.5
 Summary: This package implements an encoding to bypass entropy antivirus check.
 Home-page: https://github.com/mauricelambert/EntropyEncoding
 Author: Maurice Lambert
